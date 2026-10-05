@@ -89,6 +89,7 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
 #labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 8px 14px; border-top: 1px solid var(--line); background: var(--surface); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .legend .note { margin-left: auto; }
+.legend .legend-tg { display: none; align-items: center; gap: 6px; background: var(--surface); }
 .pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 1px 11px 1px 8px; font-size: 14px; line-height: 1.7; cursor: pointer; color: var(--ink); }
 .pill i { width: 18px; height: 8px; border-radius: 4px; background: var(--kc); display: inline-block; }
 .pill[aria-pressed="false"] { opacity: .42; }
@@ -158,14 +159,14 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
 .tourcard .row { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* 장면 위 이름표(장면은 다크 모드에서도 낮이므로 밝은 색 고정) */
-.lbl-fl { all: unset; position: absolute; left: 0; top: 0; display: inline-flex; gap: 7px; align-items: baseline; padding: 1px 9px; border-radius: 6px; background: rgba(255, 255, 255, .9); color: #1b2129; font-family: var(--f-display); font-weight: 600; font-size: 14px; line-height: 1.55; box-shadow: 0 1px 3px rgba(0, 0, 0, .14); white-space: nowrap; pointer-events: auto; cursor: pointer; will-change: transform; }
+.lbl-fl { all: unset; position: absolute; left: 0; top: 0; display: inline-flex; gap: 7px; align-items: baseline; padding: 1px 9px; border-radius: 6px; background: rgba(255, 255, 255, .9); color: #1b2129; font-family: var(--f-display); font-weight: 600; font-size: 14px; line-height: 1.55; box-shadow: 0 1px 3px rgba(0, 0, 0, .14); white-space: nowrap; pointer-events: none; will-change: transform; }
 .lbl-fl .o { font-family: var(--f-mono); color: #6a7681; font-weight: 500; }
 .lbl-fl .k { color: #c2362f; }
 .lbl-fl.mini .nmf { display: none; }
 .lbl-fl.cur { background: #1d5fa8; color: #fff; font-size: 16px; padding: 3px 12px; }
 .lbl-fl.cur .o, .lbl-fl.cur .k { color: #dbe8f6; }
 .lbl-fl.hot { box-shadow: 0 0 0 2px #d29b18; }
-.lbl-co { all: unset; position: absolute; left: 0; top: 0; font-size: 14px; line-height: 1.45; padding: 1px 8px; border-radius: 4px; background: #24313f; color: #fff; white-space: nowrap; pointer-events: auto; cursor: pointer; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); will-change: transform; }
+.lbl-co { all: unset; position: absolute; left: 0; top: 0; font-size: 14px; line-height: 1.45; padding: 1px 8px; border-radius: 4px; background: #24313f; color: #fff; white-space: nowrap; pointer-events: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); will-change: transform; }
 .lbl-co.kr { background: #c2362f; }
 .lbl-co.sec { background: rgba(255, 255, 255, .94); color: #3a4550; outline: 1px dashed #7d8a97; outline-offset: -1px; box-shadow: none; }
 .lbl-co.sec.kr { color: #b0302a; outline-color: #c2362f; }
@@ -186,7 +187,13 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
   .ctrl { gap: 6px; }
   .btn { padding: 3px 10px; }
   .search { width: 7.5em; }
-  .main { grid-template-columns: minmax(0, 1fr) 60px; grid-template-rows: 60vh auto; }
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .ttl, .ctrl { flex: 1 1 100%; min-width: 0; }
+  /* 단추는 한 줄로 두고 넘치면 가로로 밀어 본다. 두 줄이면 장면이 그만큼 줄었다 */
+  .ctrl { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -12px; padding: 0 12px 2px; }
+  .ctrl::-webkit-scrollbar { display: none; }
+  .ctrl > * { flex: none; }
+  .main { grid-template-columns: minmax(0, 1fr) 60px; grid-template-rows: min(74svh, 760px) auto; }
   .stage { grid-column: 1; grid-row: 1; }
   .rail { grid-column: 2; grid-row: 1; border-right: 0; }
   .panel { grid-column: 1 / -1; grid-row: 2; overflow: visible; border-top: 1px solid var(--line); padding: 16px 16px 28px; }
@@ -201,8 +208,28 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
   .fl .nm, .fl .krn, .zh span { display: none; }
   .fl .n { min-width: 0; text-align: center; }
   .zh { padding: 0; justify-content: center; }
-  .legend { padding: 6px 10px; gap: 5px 6px; }
+  /* 범례는 장면 위에 접어 둔다 */
+  .stage { position: relative; grid-template-rows: minmax(0, 1fr); }
+  .legend { position: absolute; left: 8px; right: 8px; bottom: 8px; padding: 0; border: 0; background: none; gap: 5px 6px; pointer-events: none; justify-content: flex-end; }
+  .legend > * { pointer-events: auto; }
   .legend .note, .legend .key { display: none; }
+  .legend .legend-tg { display: inline-flex; }
+  .legend:not(.open) #kinds { display: none !important; }
+  .legend.open .pill { background: var(--surface); }
+}
+/* 휴대폰 가로: 장면, 층 안내판, 설명을 옆으로 늘어놓는다 */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  body { overflow: hidden; }
+  .app { height: 100dvh; grid-template-rows: auto minmax(0, 1fr); }
+  .top { flex-wrap: nowrap; padding: 6px 12px; gap: 12px; }
+  h1 { font-size: 18px; flex: none; }
+  .ctrl { min-width: 0; margin: 0; padding: 0 0 2px; }
+  .main { grid-template-columns: minmax(0, 1fr) 52px minmax(240px, 38%); grid-template-rows: minmax(0, 1fr); }
+  .panel { grid-column: 3; grid-row: 1; overflow: auto; border-top: 0; border-left: 1px solid var(--line); padding: 12px 14px 20px; }
+  .rail-h { padding: 4px 4px 2px; }
+  .rail-body { padding: 2px 4px 6px 24px; }
+  .fl button { font-size: 14px; line-height: 1.15; }
+  .zh { padding: 2px 0 0; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -230,6 +257,7 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
         <div class="tip" id="tip" hidden></div>
       </div>
       <div class="legend" id="legend">
+        <button class="pill legend-tg" id="legend-tg" aria-expanded="false" aria-controls="kinds"><i style="--kc: linear-gradient(90deg, var(--coin), var(--k-power, #e08a2c), var(--accent))"></i>흐름 색</button>
         <span id="kinds" style="display:contents"></span>
         <span class="key" style="--kc:#aab4bf">덕트: 여러 층에 걸친 기업</span>
         <span class="key" style="--kc:#c2362f">붉은 이름판: 한국 기업</span>
@@ -345,9 +373,19 @@ function renderTourCard() {
     <span class="sub">${L[f.from].order}층 ${esc(L[f.from].name)}에서 ${L[f.to].order}층 ${esc(ro(L[f.to].name))}${f.note ? `. ${esc(f.note)}` : ""}</span>
     <div class="row"><button class="btn" id="t-prev"${state.tour === 0 ? " disabled" : ""}>이전</button><button class="btn" id="t-next">${state.tour === TOUR.length - 1 ? "처음으로" : "다음"}</button><button class="btn" id="t-end">끝내기</button></div></div>`;
 }
+function renderKr() {
+  const all = D.companies.filter(c => c.korea);
+  let h = `<section class="p-sec krlist"><h3>한국 기업 ${all.length}곳</h3><ul class="flowlist">`;
+  for (let k = NF; k >= 1; k--) {
+    const id = LID(k), cs = all.filter(c => c.layers.some(x => x.layer === id)).sort(byName);
+    if (cs.length) h += `<li style="--kc: var(--kr)"><span class="ftag">${k}층</span><div class="pchips">${cs.map(c => chip(c, c.primary !== id)).join("")}</div></li>`;
+  }
+  return h + `</ul><p class="meta">점선은 다른 층이 주 무대인 기업</p></section>`;
+}
 function renderPanel() {
   const s = state.sel, p = $("#panel");
   let h = s.type === "company" ? renderCompany(C[s.id]) : s.id ? renderLayer(L[s.id]) : renderIntro();
+  if (state.kr && narrow && s.type !== "company") h = renderKr() + h;
   if (state.tour >= 0) h = renderTourCard() + h;
   p.innerHTML = h;
   p.scrollTop = 0;
@@ -1166,13 +1204,26 @@ function useModels(on) {
   $("#model-btn").setAttribute("aria-pressed", String(on));
 }
 // 조명을 구운 모형: 블렌더가 해, 하늘빛, 그림자, 표면 무늬를 한 장에 구운 이미지(<이름>.webp)를 조명 계산 없이 입힌다
+// 판정은 창 크기로 한다(아래 function screen()이 전역 screen을 가린다). 휴대폰은 장면 폭이 700화소 안팎이라 2048 이미지 15장(그래픽 메모리 약 325MB)이 과하고 탭이 다시 열릴 수 있다. 1024로 줄여 올린다(약 85MB)
+const SMALL_TEX = Math.min(innerWidth, innerHeight) < 600 || (navigator.deviceMemory || 8) <= 4;
+let texQueue = Promise.resolve();
 function bakedMat(key) {
   const b64 = MODELS[key + ".webp"];
   if (!b64) return null;
-  const im = new Image(), t = new THREE.Texture(im);
+  const t = new THREE.Texture(), src = "data:image/webp;base64," + b64;
   t.flipY = false; t.encoding = THREE.sRGBEncoding; t.anisotropy = MAXANI;
-  im.onload = () => { t.needsUpdate = true; };
-  im.src = "data:image/webp;base64," + b64;
+  if (!SMALL_TEX) { const im = new Image(); im.onload = () => { t.image = im; t.needsUpdate = true; }; im.src = src; }
+  // 한 장씩 풀어 줄이므로 큰 이미지 여러 장이 한꺼번에 메모리에 올라가지 않는다
+  else texQueue = texQueue.then(() => new Promise(done => {
+    const im = new Image();
+    im.onload = () => {
+      const w = Math.min(1024, im.naturalWidth), h = Math.round(im.naturalHeight * w / im.naturalWidth), c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(im, 0, 0, w, h);
+      t.image = c; t.needsUpdate = true; im.src = ""; done();
+    };
+    im.onerror = done; im.src = src;
+  }));
   // 저장할 때 블렌더가 색 변환(AgX)을 이미 적용했으므로 페이지의 톤 매핑을 다시 걸지 않는다
   return new THREE.MeshBasicMaterial({ map: t, toneMapped: false });
 }
@@ -1354,9 +1405,11 @@ function measure() {
 const rig = { mode: "overview", e: NF, travel: null, dragging: false, lastInput: -1e9, settled: null,
   cy: HTOP / 2, fitH: HTOP / 2 + 3, fitW: 21, pitch: 0.12, tx: 0.6, az: -0.3, azGoal: -0.3, d: 100 };
 let vw = 1, vh = 1, narrow = false;
+// 좁은 화면의 층 보기는 건물 폭의 72%만 맞춘다. 폭 전체를 맞추면 세로 화면에서 층이 띠처럼 작았다
+const FITW_NARROW = 9.3;
 function viewGoal() {
   if (rig.mode === "overview") return { cy: HTOP / 2 + 0.6, fitH: HTOP / 2 + 3.2, fitW: 21.5, pitch: 0.11 };
-  return { cy: yf(rig.e) + 1.9, fitH: FH * 0.8, fitW: narrow ? 11.2 : 13.4, pitch: 0.14 };
+  return { cy: yf(rig.e) + 1.9, fitH: FH * 0.8, fitW: narrow ? FITW_NARROW : 13.4, pitch: 0.14 };
 }
 const camTarget = new THREE.Vector3();
 function placeCamera() {
@@ -1374,7 +1427,7 @@ function placeCamera() {
   sun.target.position.set(0, rig.cy, 0);
   sun.position.set(18, rig.cy + 30, 26);
 }
-function pxPerFloor() { const d = Math.max(FH * 0.8 / TANH, (narrow ? 11.2 : 13.4) / (TANH * vw / vh)) + DEP / 2; return vh / (2 * d * TANH) * FH; }
+function pxPerFloor() { const d = Math.max(FH * 0.8 / TANH, (narrow ? FITW_NARROW : 13.4) / (TANH * vw / vh)) + DEP / 2; return vh / (2 * d * TANH) * FH; }
 function goFloor(k, ms) {
   k = clamp(Math.round(k), 1, NF);
   rig.mode = "floor";
@@ -1479,7 +1532,8 @@ for (const [k, n] of Object.entries(KIND)) {
   b.onclick = () => { state.kinds.has(k) ? state.kinds.delete(k) : state.kinds.add(k); b.setAttribute("aria-pressed", state.kinds.has(k)); applyLook(); };
   kinds.appendChild(b);
 }
-$("#kr-btn").onclick = e => { state.kr = !state.kr; e.currentTarget.setAttribute("aria-pressed", state.kr); applyLook(); };
+$("#kr-btn").onclick = e => { state.kr = !state.kr; e.currentTarget.setAttribute("aria-pressed", state.kr); applyLook(); if (narrow) renderPanel(); };
+$("#legend-tg").onclick = e => { const open = $("#legend").classList.toggle("open"); e.currentTarget.setAttribute("aria-expanded", String(open)); };
 $("#all-btn").onclick = overview;
 $("#q").oninput = e => {
   state.q = e.target.value; applyLook();
@@ -1555,6 +1609,17 @@ function pick(e) {
   const fh = ray.intersectObjects(floorHits, false)[0];
   return fh ? { kind: "floor", k: fh.object.userData.k } : null;
 }
+// 이름표가 손가락을 받으면 브라우저가 그 끌기를 화면 밀기로 가져가 장면이 돌지 않았다. 이름표는 그림으로만 두고, 누른 자리에 이름표가 있으면 그 이름표를 누른 것으로 친다
+function labelAt(e) {
+  const els = labelBox.children;
+  for (let i = els.length - 1; i >= 0; i--) {
+    const el = els[i];
+    if (el.style.display === "none") continue;
+    const r = el.getBoundingClientRect();
+    if (r.width && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) return el;
+  }
+  return null;
+}
 let ptr = null;
 canvas.addEventListener("pointerdown", e => {
   const p = pick(e);
@@ -1574,6 +1639,7 @@ canvas.addEventListener("pointermove", e => {
     tip.hidden = true;
     return;
   }
+  if (labelAt(e)) { canvas.classList.add("hover"); tip.hidden = true; return; }
   const p = pick(e);
   canvas.classList.toggle("hover", !!p && p.kind !== "floor");
   let t = "";
@@ -1594,6 +1660,8 @@ const canvasUp = e => {
   canvas.classList.remove("drag", "lift");
   ptr = null; rig.dragging = false;
   if (!wasClick) return;
+  const lab = labelAt(e);
+  if (lab) { lab.click(); return; }
   const p = pick(e);
   if (!p || p.kind === "car") return;
   if (state.tour >= 0) tourEnd(false);
@@ -1639,7 +1707,7 @@ function placeLabels() {
     el.classList.toggle("cur", k === stopK);
     el.classList.toggle("hot", !!hot && hot.has(LID(k)) && k !== stopK);
     el.classList.toggle("mini", mini);
-    const fx = Math.max(4, p.x), fw = mini ? el._wm : el._w;
+    const fw = mini ? el._wm : el._w, fx = clamp(p.x, 4, vw - fw - 4);
     el.style.transform = `translate(${fx}px, ${p.y}px)`;
     tagRects.push({ x: fx, y: p.y, w: fw * (k === stopK ? 1.15 : 1), h: el._h * (k === stopK ? 1.2 : 1) });
   }
@@ -1656,10 +1724,11 @@ function placeLabels() {
     if (Math.abs(rig.az) > 0.85 && pri < 3) pri = 0;
     el.classList.toggle("sel", selCo === b.cid);
     // 전체 보기의 강조(한국·검색) 이름표는 건물 오른쪽에 층별 한 줄로 늘어놓아 다른 층으로 밀려 올라가지 않게 한다
-    if (pri === 1 && rig.mode === "overview") { (rows[b.k] = rows[b.k] || []).push(el); return; }
+    // 좁은 화면에는 건물 옆에 이름을 늘어놓을 자리가 없어 패널 목록(renderKr)으로 보낸다
+    if (pri === 1 && rig.mode === "overview") { if (narrow) el.style.display = "none"; else (rows[b.k] = rows[b.k] || []).push(el); return; }
     const p = pri && proj(b.x, b.y + BH + 0.12, BZ + BD / 2);
     if (!p) { el.style.display = "none"; return; }
-    items.push({ el, pri, x: p.x - el._w / 2, y: p.y - el._h, w: el._w, h: el._h, k: b.k });
+    items.push({ el, pri, x: clamp(p.x - el._w / 2, 4, vw - el._w - 4), y: p.y - el._h, w: el._w, h: el._h, k: b.k });
   });
   let bottom = -1e9;
   for (const k of Object.keys(rows).map(Number).sort((a, b) => b - a)) {
@@ -1692,7 +1761,8 @@ function placeLabels() {
 /* ---------- 그리기 ---------- */
 function resize() {
   vw = Math.max(1, view.clientWidth); vh = Math.max(1, view.clientHeight);
-  narrow = vw < 620;
+  const was = narrow; narrow = vw < 620;
+  if (was !== narrow && state.kr) renderPanel();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(vw, vh, false);
   camera.aspect = vw / vh; camera.updateProjectionMatrix();

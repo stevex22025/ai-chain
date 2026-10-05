@@ -101,7 +101,7 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
 #scene.hover { cursor: pointer; }
 #labels, #mlabels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .lbl { position: absolute; left: 0; top: 0; white-space: nowrap; will-change: transform; }
-.tl { all: unset; position: absolute; left: 0; top: 0; cursor: pointer; pointer-events: auto; display: inline-flex; gap: 7px; align-items: baseline; padding: 1px 10px 1px 8px; border-radius: 6px; background: rgba(255, 255, 255, .9); color: #15202b; font-family: var(--f-display); font-weight: 600; font-size: 15px; line-height: 1.55; box-shadow: 0 1px 3px rgba(0, 0, 0, .14); border-left: 4px solid var(--zc); white-space: nowrap; transition: background .2s, box-shadow .2s; }
+.tl { all: unset; position: absolute; left: 0; top: 0; pointer-events: none; display: inline-flex; gap: 7px; align-items: baseline; padding: 1px 10px 1px 8px; border-radius: 6px; background: rgba(255, 255, 255, .9); color: #15202b; font-family: var(--f-display); font-weight: 600; font-size: 15px; line-height: 1.55; box-shadow: 0 1px 3px rgba(0, 0, 0, .14); border-left: 4px solid var(--zc); white-space: nowrap; transition: background .2s, box-shadow .2s; }
 .tl .o { font-family: var(--f-mono); font-size: 14px; color: #6a7681; font-weight: 500; }
 .tl .kr { font-size: 14px; color: #c2362f; font-weight: 600; }
 .tl.on { background: #1b5288; color: #fff; }
@@ -111,7 +111,7 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
 .tl.drop { background: #e0a91f; color: #2a1e03; }
 .tl.pop { animation: pop .6s ease-out; }
 @keyframes pop { 0% { scale: 1; } 30% { scale: 1.22; } 100% { scale: 1; } }
-.cl { all: unset; position: absolute; left: 0; top: 0; cursor: pointer; pointer-events: auto; font-size: 14px; line-height: 1.45; padding: 0 7px; border-radius: 5px; background: rgba(255, 255, 255, .94); color: #15202b; border: 1px solid rgba(21, 32, 43, .16); white-space: nowrap; }
+.cl { all: unset; position: absolute; left: 0; top: 0; pointer-events: none; font-size: 14px; line-height: 1.45; padding: 0 7px; border-radius: 5px; background: rgba(255, 255, 255, .94); color: #15202b; border: 1px solid rgba(21, 32, 43, .16); white-space: nowrap; }
 .cl.kr { border-color: #c2362f; color: #9e211b; }
 .cl.sel { background: #1b5288; color: #fff; border-color: #1b5288; }
 .cl.ghost { background: rgba(255, 255, 255, .78); border-style: dashed; color: #55626e; }
@@ -186,7 +186,7 @@ h1 { font-family: var(--f-display); font-weight: 700; font-size: 24px; line-heig
 .tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
 .tab:focus-visible { outline: 2px solid var(--accent); }
 body.map .terr-only, body:not(.map) .map-only { display: none !important; }
-.sl { all: unset; position: absolute; left: 0; top: 0; cursor: pointer; pointer-events: auto; font-size: 14px; line-height: 1.45; padding: 0 7px 0 6px; border-radius: 5px; background: rgba(255, 255, 255, .94); color: #15202b; border: 1px solid rgba(21, 32, 43, .16); border-left: 4px solid var(--sc); white-space: nowrap; }
+.sl { all: unset; position: absolute; left: 0; top: 0; pointer-events: none; font-size: 14px; line-height: 1.45; padding: 0 7px 0 6px; border-radius: 5px; background: rgba(255, 255, 255, .94); color: #15202b; border: 1px solid rgba(21, 32, 43, .16); border-left: 4px solid var(--sc); white-space: nowrap; }
 .sl.sel { background: #1b5288; color: #fff; border-color: #1b5288; border-left-color: var(--sc); }
 .sl.dim { opacity: .45; }
 .sl.fut { border-style: dashed; border-left-style: solid; }
@@ -213,6 +213,27 @@ body.map .terr-only, body:not(.map) .map-only { display: none !important; }
   .tourbar .cap { font-size: 17px; }
   .panel { border-left: 0; padding: 16px 14px 32px; }
   .tl { font-size: 14px; padding: 0 8px 0 6px; }
+}
+/* 휴대폰 가로: 장면 높이가 220px까지 줄어 이름표가 겹쳤다. 설명 패널을 옆으로 보내고 머리를 한 줄로 */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  body { display: grid; height: 100svh; overflow: hidden; grid-template-columns: minmax(0, 1fr) minmax(240px, 36%); }
+  .top { grid-template-columns: auto minmax(0, 1fr); align-items: center; padding: 6px 12px; gap: 10px; }
+  .ttl { flex-wrap: nowrap; gap: 8px; }
+  .ttl .q { display: none; }
+  h1 { font-size: 18px; white-space: nowrap; }
+  .ctrl { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .ctrl::-webkit-scrollbar { display: none; }
+  .ctrl > * { flex: none; }
+  .stage { height: auto; }
+  .note { padding: 4px 12px; font-size: 14px; line-height: 1.45; }
+  #hint { display: none; }
+  .panel { overflow: auto; border-left: 1px solid var(--line); padding: 12px 14px 20px; }
+  /* 투어 막대는 한 줄로 줄이고, 투어 중에는 규모 안내를 잠시 감춰 장면 높이를 지킨다(안내는 첫 패널에도 있음) */
+  .tourbar { grid-template-columns: minmax(0, 1fr) auto; padding: 6px 12px; gap: 2px 10px; }
+  .tourbar .sub { display: none; }
+  .tourbar .cap { font-size: 15px; }
+  .tourbar .step { font-size: 14px; }
+  .under:has(.tourbar:not([hidden])) .note { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -1269,7 +1290,7 @@ function placeLabels() {
     o.el.hidden = false;
     o.el.classList.toggle("sel", selCo === o.id);
     const [w, h] = sizeOf(o.el);
-    items.push({ el: o.el, x: p.x - w / 2, y: p.y - h, w, h, pri: selCo === o.id ? 90 : (state.kr && C[o.id].korea) ? 50 : 40 - camPos.distanceTo(o.pos) * 0.1, must: selCo === o.id, co: true });
+    items.push({ el: o.el, x: Math.min(SW - w - 4, Math.max(4, p.x - w / 2)), y: p.y - h, w, h, pri: selCo === o.id ? 90 : (state.kr && C[o.id].korea) ? 50 : 40 - camPos.distanceTo(o.pos) * 0.1, must: selCo === o.id, co: true });
   }
   items.sort((a, b) => b.pri - a.pri);
   const placed = [];
@@ -1522,6 +1543,8 @@ function setNdc(e) { const r = canvas.getBoundingClientRect(); ndc.set(((e.clien
 function layerUnder(e) {
   const r = canvas.getBoundingClientRect();
   if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return null;
+  const lab = labelAt(e);
+  if (lab && lab.dataset.layer) return lab.dataset.layer;
   setNdc(e);
   const h = ray.intersectObjects([...terrMeshes, ...pickBld], false)[0];
   if (!h) return null;
@@ -1638,6 +1661,17 @@ document.addEventListener("click", e => {
 
 /* ---------- 포인터 ---------- */
 const pickables = () => [...pickBld, ...terrMeshes, ...Object.values(fo).map(o => o.water).filter(Boolean)];
+// 이름표가 손가락을 받으면 브라우저가 그 끌기를 화면 밀기로 가져가 장면이 돌지 않았다. 이름표는 그림으로만 두고, 누른 자리에 이름표가 있으면 그 이름표를 누른 것으로 친다
+function labelAt(e) {
+  const box = state.tab === "map" ? mlabelBox : labelBox, els = box.children;
+  for (let i = els.length - 1; i >= 0; i--) {
+    const el = els[i];
+    if (el.hidden || !el.matches(".tl, .cl, .sl") || el.style.display === "none" || el.style.visibility === "hidden") continue;
+    const r = el.getBoundingClientRect();
+    if (r.width && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) return el;
+  }
+  return null;
+}
 let down = null;
 function pick(e) {
   setNdc(e);
@@ -1653,6 +1687,7 @@ function pick(e) {
 canvas.addEventListener("pointerdown", e => { down = { x: e.clientX, y: e.clientY }; });
 canvas.addEventListener("pointermove", e => {
   if (e.buttons) { $("#tip").hidden = true; return; }
+  if (labelAt(e)) { canvas.classList.add("hover"); $("#tip").hidden = true; return; }
   if (state.tab === "map") {
     const u = mapPick(e), tip = $("#tip");
     canvas.classList.toggle("hover", !!u);
@@ -1673,6 +1708,8 @@ canvas.addEventListener("pointermove", e => {
 canvas.addEventListener("pointerleave", () => { $("#tip").hidden = true; });
 canvas.addEventListener("pointerup", e => {
   if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 5) return;
+  const lab = labelAt(e);
+  if (lab) { lab.click(); return; }
   if (state.tab === "map") { const u = mapPick(e); if (u) (u.kind === "site" ? selectSite : selectDeal)(u.id); return; }
   const o = pick(e);
   if (!o) return;
@@ -1961,7 +1998,7 @@ function placeMapLabels() {
     if (!p.ok) { m.el.hidden = true; continue; }
     m.el.hidden = false;
     const [w, h] = sizeOf(m.el);
-    items.push({ el: m.el, x: p.x - w / 2, y: p.y - h, w, h, pri: selS === id ? 100 : m.el.classList.contains("dim") ? 10 : 50 - camera.position.distanceTo(m.pos) * 0.1, must: selS === id });
+    items.push({ el: m.el, x: Math.min(SW - w - 4, Math.max(4, p.x - w / 2)), y: p.y - h, w, h, pri: selS === id ? 100 : m.el.classList.contains("dim") ? 10 : 50 - camera.position.distanceTo(m.pos) * 0.1, must: selS === id });
   }
   items.sort((a, b) => b.pri - a.pri);
   const placed = [];
@@ -2077,6 +2114,7 @@ function mapPick(e) {
   const h = ray.intersectObjects(mapPickables, false).find(x => x.object.visible && (x.object.parent ? x.object.parent.visible : true));
   return h ? h.object.userData : null;
 }
+if (matchMedia("(pointer: coarse)").matches) $("#hint").textContent = "끌어서 돌리기, 두 손가락으로 확대";
 $("#tab-terrain").onclick = () => setTab("terrain");
 $("#tab-map").onclick = () => setTab("map");
 for (const [k, n] of Object.entries(SITE_KIND)) {
